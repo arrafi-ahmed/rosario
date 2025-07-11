@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{event.name}} Badge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+        }
+        .badge {
+            width: 85mm;
+            height: 55mm;
+            border: 1px solid #1a73e8;
+            border-radius: 6px;
+            padding: 1mm;
+            box-sizing: border-box;
+            text-align: center;
+            background: #ffffff;
+        }
+        .event-banner {
+            width: 50px;
+            height: 50px;
+            display: block;
+            margin: 0 auto 2mm;
+        }
+        .event-name {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #1a73e8;
+            text-transform: uppercase;
+            margin: 0 0 1mm;
+            line-height: 1.1;
+        }
+        .attendee-name {
+            font-size: 7pt;
+            font-weight: 600;
+            color: #333333;
+            margin: 0 0 1mm;
+            line-height: 1.1;
+        }
+        .rut {
+            font-size: 6pt;
+            font-weight: 500;
+            color: #333333;
+            margin: 0 0 1mm;
+            line-height: 1.1;
+        }
+        .email {
+            font-size: 6pt;
+            color: #666666;
+            margin: 0 0 1mm;
+            word-break: break-all;
+            line-height: 1.1;
+        }
+        .qr-image {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: block;
+            margin: 1mm auto 0;
+        }
+        @media print {
+            body {
+                background: none;
+            }
+            .badge {
+                border: 1px solid #1a73e8;
+                page-break-inside: avoid;
+            }
+            @page {
+                size: 85mm 55mm;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="badge" role="presentation">
+    <img class="event-banner" src="{{eventBanner}}" alt="{{event.name}} banner" />
+    <div class="event-name">{{event.name}}</div>
+    <div class="attendee-name">{{registration.name}}</div>
+    <div class="rut">{{registration.rut}}</div>
+    <div class="email">{{registration.email}}</div>
+    <img class="qr-image" src="data:image/png;base64,{{qrCode}}" alt="Event QR Code" />
+</div>
+</body>
+</html>
