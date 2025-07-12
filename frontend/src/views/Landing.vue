@@ -1,5 +1,5 @@
 <script setup>
-import {getClientPublicImgUrl} from "@/others/util";
+import {getClientPublicImageUrl} from "@/others/util";
 import {useDisplay} from "vuetify";
 
 const {xs} = useDisplay();
@@ -28,7 +28,7 @@ const scrollTo = (sectionId) => {
       <v-col class="d-none d-sm-flex" cols="5">
         <v-row no-gutters>
           <v-col cols="11">
-            <v-img :src="getClientPublicImgUrl('landing1.png')"></v-img>
+            <v-img :src="getClientPublicImageUrl('landing1.png')"></v-img>
           </v-col>
         </v-row>
       </v-col>
@@ -49,7 +49,7 @@ const scrollTo = (sectionId) => {
                 md="9"
               >
                 <v-img
-                  :src="getClientPublicImgUrl('logo.png')"
+                  :src="getClientPublicImageUrl('logo.png')"
                   class="v-icon--clickable"
                   @click="$router.push({ name: 'signin' })"
                 ></v-img>
@@ -82,7 +82,7 @@ const scrollTo = (sectionId) => {
             <v-row align="center" class="py-4" justify="center">
               <v-col cols="auto">
                 <v-img
-                  :src="getClientPublicImgUrl('landing2.png')"
+                  :src="getClientPublicImageUrl('landing2.png')"
                   :width="35"
                 ></v-img>
               </v-col>
@@ -192,7 +192,7 @@ const scrollTo = (sectionId) => {
         <v-row>
           <v-col cols="12" sm="3">
             <v-img
-              :src="getClientPublicImgUrl('landing3.png')"
+              :src="getClientPublicImageUrl('landing3.png')"
               class="h-100 rounded"
               cover
             ></v-img>
@@ -381,7 +381,7 @@ const scrollTo = (sectionId) => {
 
           <v-col cols="12" order="first" order-sm="last" sm="3">
             <v-img
-              :src="getClientPublicImgUrl('landing4.png')"
+              :src="getClientPublicImageUrl('landing4.png')"
               class="h-100 rounded"
               cover
             ></v-img>
@@ -396,7 +396,7 @@ const scrollTo = (sectionId) => {
         <v-row justify="center">
           <v-col cols="12" sm="3">
             <v-img
-              :src="getClientPublicImgUrl('landing5.png')"
+              :src="getClientPublicImageUrl('landing5.png')"
               class="h-100 rounded"
               cover
             ></v-img>
@@ -491,7 +491,7 @@ const scrollTo = (sectionId) => {
 
           <v-col cols="12" order="first" order-sm="last" sm="3">
             <v-img
-              :src="getClientPublicImgUrl('landing6.png')"
+              :src="getClientPublicImageUrl('landing6.png')"
               class="h-100 rounded"
               cover
             ></v-img>

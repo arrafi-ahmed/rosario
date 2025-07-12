@@ -38,7 +38,7 @@ export const formatDateTime = (inputDateTime) => {
   return `${formattedDate} ${hours}:${minutes}`;
 };
 
-export const getClientPublicImgUrl = (imageName) =>
+export const getClientPublicImageUrl = (imageName) =>
   imageName ? `/img/${imageName}` : null;
 
 export const getApiPublicImgUrl = (imageName, type) =>
@@ -46,19 +46,19 @@ export const getApiPublicImgUrl = (imageName, type) =>
 
 export const getUserImageUrl = (imageName) => {
   return imageName === "null" || !imageName
-    ? getClientPublicImgUrl("default-user.jpg")
+    ? getClientPublicImageUrl("default-user.jpg")
     : getApiPublicImgUrl(imageName, "user");
 };
 
 export const getClubImageUrl = (imageName) => {
   return imageName === "null" || !imageName
-    ? getClientPublicImgUrl("default-user.jpg")
+    ? getClientPublicImageUrl("default-user.jpg")
     : getApiPublicImgUrl(imageName, "club-logo");
 };
 
 export const getEventImageUrl = (imageName) => {
   return imageName === "null" || !imageName
-    ? getClientPublicImgUrl("default-event.jpg")
+    ? getClientPublicImageUrl("default-event.jpg")
     : getApiPublicImgUrl(imageName, "event-banner");
 };
 

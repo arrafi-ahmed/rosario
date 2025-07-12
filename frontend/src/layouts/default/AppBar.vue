@@ -3,14 +3,20 @@ import Logo from "@/components/Logo.vue";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
 import {computed, ref} from "vue";
-import {getClientPublicImgUrl, getToLink, getUserImageUrl,} from "@/others/util";
+import {getClientPublicImageUrl, getToLink} from "@/others/util";
+import {useDisplay} from "vuetify";
 
 const store = useStore();
 const router = useRouter();
+const {smAndUp} = useDisplay();
 
 const signedin = computed(() => store.getters["user/signedin"]);
 const currentUser = computed(() => store.getters["user/getCurrentUser"]);
 const calcHome = computed(() => store.getters["user/calcHome"]);
+
+const isRequiresNoAuth = computed(() =>
+  store.state.routeInfo.to.matched.some((record) => record.meta.requiresNoAuth),
+);
 
 const isSudo = computed(() => store.getters["user/isSudo"]);
 const isAdmin = computed(() => store.getters["user/isAdmin"]);
@@ -63,37 +69,48 @@ const drawer = ref(false);
 </script>
 
 <template>
-  <v-app-bar class="px-2 px-md-5 py-1 border-b" dense density="compact" flat>
-    <!--      :img-src="getClientPublicImgUrl('logo.png')"-->
+  <v-app-bar
+    class="px-2 px-md-5"
+    color="header"
+    flat
+  >
     <logo
-      title="Dozie Events"
-      :width="180"
+      :img-class="isRequiresNoAuth ? 'mx-auto' : 'mx-3'"
+      :title="true"
+      :width="smAndUp ? 190: 150"
       container-class="clickable"
-      img-class="mx-auto"
       @click="router.push(calcHome)"
     />
 
     <template #append>
-      <v-btn v-if="signedin" rounded="pill" @click="drawer = !drawer">
+      <v-btn
+        v-if="signedin"
+        rounded="pill"
+        :size="smAndUp ? 'large' : 'small'"
+        variant="tonal"
+        color="primary"
+        @click="drawer = !drawer"
+      >
         <template #prepend>
-          <v-avatar :size="30" rounded="circle" title>
-            <v-img
-              :aspect-ratio="1"
-              :src="getUserImageUrl(currentUser.image)"
-              alt="User Avatar"
-              cover
-            />
+          <v-avatar :size="25">
+            <v-icon :size="25">
+              mdi-account-circle
+            </v-icon>
           </v-avatar>
         </template>
-        <template #default>
-          <span class="text-body-2 text-capitalize">{{
-              currentUser.name
+        <template
+          v-if="smAndUp"
+          #default
+        >
+          <span
+            class="text-capitalize"
+            style="font-size: 0.8rem"
+          >{{
+              currentUser.fullName ? currentUser.fullName.split(" ")[0] : ""
             }}</span>
         </template>
         <template #append>
-          <v-icon
-            :icon="drawer ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-          ></v-icon>
+          <v-icon :icon="drawer ? 'mdi-chevron-up' : 'mdi-chevron-down'" />
         </template>
       </v-btn>
     </template>

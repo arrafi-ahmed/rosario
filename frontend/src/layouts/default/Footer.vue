@@ -5,7 +5,7 @@ import {useStore} from "vuex";
 const store = useStore();
 </script>
 <template>
-  <v-footer app class="bg-grey-lighten-3 flex-grow-0">
+  <v-footer app class="flex-grow-0">
     <v-row justify="center" no-gutters>
       <v-col class="text-center" cols="12">
         <small>
