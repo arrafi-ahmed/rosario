@@ -12,7 +12,7 @@ const store = useStore();
 
 const newClubInit = {
   name: null,
-  description: null,
+  location: null,
   logo: null,
 };
 const newClub = reactive({...newClubInit});
@@ -30,7 +30,7 @@ const handleAddClub = async () => {
 
   const formData = new FormData();
   formData.append("name", newClub.name);
-  formData.append("description", newClub.description);
+  formData.append("location", newClub.location);
 
   if (newClub.logo) formData.append("files", newClub.logo);
 
@@ -81,7 +81,7 @@ const handleAddClub = async () => {
           ></v-text-field>
 
           <v-text-field
-            v-model="newClub.description"
+            v-model="newClub.location"
             :rules="[(v) => !!v || 'Location is required!']"
             class="mt-2 mt-md-4"
             clearable
