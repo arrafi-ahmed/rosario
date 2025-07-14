@@ -9,7 +9,7 @@ const route = useRoute();
 const store = useStore();
 let vantaEffect = null;
 const fogElement = ref(null);
-const currentUser = computed(() => store.getters["user/getCurrentUser"]);
+const currentUser = computed(() => store.getters["auth/getCurrentUser"]);
 
 // const theme = useTheme();
 // const themeColors = computed(() => theme.global.current.value.colors);
@@ -23,7 +23,7 @@ onMounted(async () => {
   await delay(1000);
 
   // Initialize VANTA.FOG with options
-  if (fogElement.value && !["sudo", "admin"].includes(currentUser.value.role)) {
+  if (fogElement.value && ![10, 20].includes(currentUser.value.role)) {
     vantaEffect = FOG({
       el: fogElement.value,
       mouseControls: true,

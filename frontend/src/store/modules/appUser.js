@@ -1,4 +1,5 @@
 import $axios from "@/plugins/axios";
+import {ifAdmin} from "@/others/util";
 
 export const namespaced = true;
 
@@ -23,13 +24,15 @@ export const actions = {
   saveAppUser({commit}, request) {
     const commitName =
       (request.user.id ? "edit" : "add") +
-      (request.user.role.toLowerCase() === "admin" ? "Admin" : null);
+      (ifAdmin({role: request.user.role}) ? "Admin" : null);
     return new Promise((resolve, reject) => {
       $axios
         .post("/appUser/save", {payload: request.user})
         .then((response) => {
+          const {password, ...rest} = response.data?.payload;
           commit(commitName, {
-            ...response.data?.payload,
+            ...rest,
+            password: request.user.password,
           });
           resolve(response);
         })
@@ -38,14 +41,17 @@ export const actions = {
         });
     });
   },
-  setAppUsers({commit}, request) {
+  setAdmins({commit}, request) {
     return new Promise((resolve, reject) => {
       $axios
         .get("/appUser/getAppUsers", {
           params: {clubId: request},
         })
         .then((response) => {
-          commit("setAdmins", response.data?.payload?.admins);
+          response.data?.payload?.appUsers.forEach((item) => {
+
+          })
+          commit("setAdmins", response.data?.payload?.appUsers);
           resolve(response);
         })
         .catch((err) => {

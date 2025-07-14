@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 //routes
-app.use("/user", require("./src/controller/user"));
+app.use("/auth", require("./src/controller/auth"));
 app.use("/club", require("./src/controller/club"));
 app.use("/event", require("./src/controller/event"));
 app.use("/registration", require("./src/controller/registration"));

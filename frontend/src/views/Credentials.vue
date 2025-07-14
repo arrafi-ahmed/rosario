@@ -4,6 +4,7 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 import {toast} from "vue-sonner";
+import {generatePassword} from "@/others/util";
 
 const store = useStore();
 const route = useRoute();
@@ -23,7 +24,7 @@ const isFormValid = ref(true);
 
 const userInit = {
   id: null,
-  username: null,
+  email: null,
   password: null,
   role: null,
   clubId: null,
@@ -49,7 +50,6 @@ const handleSubmitCredential = async (type) => {
   if (!isFormValid.value) return;
 
   type = type.toLowerCase();
-  user.role = type;
   user.clubId = route.params.clubId;
 
   await store.dispatch("appUser/saveAppUser", {user}).then(() => {
@@ -64,15 +64,15 @@ const handleSubmitCredential = async (type) => {
 // const deleteAppUser = (id, type) => {
 //   store.dispatch("appUser/remove", { id, type });
 // };
-const copyToClipboard = async (item) => {
-  await navigator.clipboard.writeText(
-    `Username: ${item.username}, Password: ${item.password}`,
-  );
-  toast.info("Copied to clipboard!");
+
+const showGeneratedPassword = ref(false);
+const handleGeneratePassword = () => {
+  user.password = generatePassword();
+  showGeneratedPassword.value = !showGeneratedPassword.value;
 };
 
 onMounted(() => {
-  store.dispatch("appUser/setAppUsers", route.params.clubId);
+  store.dispatch("appUser/setAdmins", route.params.clubId);
 });
 </script>
 
@@ -110,16 +110,16 @@ onMounted(() => {
             <v-table v-if="admins?.length > 0" density="comfortable" hover>
               <thead>
               <tr>
-                <th class="text-start">Username</th>
-                <th class="text-center">Password</th>
+                <th class="text-start">Email</th>
+                <th class="text-start">Password</th>
                 <th class="text-end"></th>
               </tr>
               </thead>
               <tbody>
               <tr v-for="(item, index) in admins" :key="'e-' + index">
-                <td>{{ item.username }}</td>
-                <td class="text-center">{{ item.password }}</td>
-                <td class="text-end">
+                <td>{{ item.email }}</td>
+                <td class="text-start">*********</td>
+                <td class="text-start">
                   <v-menu>
                     <template v-slot:activator="{ props }">
                       <v-btn
@@ -134,16 +134,16 @@ onMounted(() => {
                       <v-list-item
                         density="compact"
                         link
-                        prepend-icon="mdi-content-copy"
-                        title="Copy"
-                        @click="copyToClipboard(item)"
+                        prepend-icon="mdi-pencil"
+                        title="Edit"
+                        @click="openEditDialog(item, 'admin')"
                       ></v-list-item>
                       <v-list-item
                         density="compact"
                         link
-                        prepend-icon="mdi-pencil"
-                        title="Edit"
-                        @click="openEditDialog(item, 'admin')"
+                        prepend-icon="mdi-delete"
+                        title="Delete"
+                        @click="copyToClipboard(item)"
                       ></v-list-item>
                       <!--                        <remove-entity-->
                       <!--                          btn-variant="flat"-->
@@ -173,13 +173,13 @@ onMounted(() => {
       <v-card-text>
         <v-form ref="form" v-model="isFormValid" fast-fail>
           <v-text-field
-            v-model="user.username"
-            :rules="[(v) => !!v || 'Username is required!']"
+            v-model="user.email"
+            :rules="[(v) => !!v || 'Email is required!']"
             class="mt-2"
             clearable
             density="compact"
             hide-details="auto"
-            label="Username"
+            label="Email"
           ></v-text-field>
         </v-form>
       </v-card-text>
@@ -201,15 +201,16 @@ onMounted(() => {
       <v-card-text>
         <v-form ref="form" v-model="isFormValid" fast-fail>
           <v-text-field
-            v-model="user.username"
-            :rules="[(v) => !!v || 'Username is required!']"
+            v-model="user.email"
+            :rules="[(v) => !!v || 'Email is required!']"
             class="mt-2"
             clearable
             density="compact"
             hide-details="auto"
-            label="Username"
+            label="Email"
           ></v-text-field>
           <v-text-field
+            v-if="showGeneratedPassword"
             v-model="user.password"
             :rules="[(v) => !!v || 'Password is required!']"
             class="mt-2"
@@ -218,6 +219,10 @@ onMounted(() => {
             hide-details="auto"
             label="Password"
           ></v-text-field>
+          <v-btn color="primary" variant="tonal" class="mt-2" size="small" prepend-icon="mdi-recycle"
+                 @click="handleGeneratePassword">
+            Generate New Password
+          </v-btn>
         </v-form>
       </v-card-text>
       <v-card-actions>

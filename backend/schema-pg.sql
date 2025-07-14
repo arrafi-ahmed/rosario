@@ -12,7 +12,7 @@ CREATE TABLE app_user
     full_name  VARCHAR(255),
     email      VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
-    role       SMALLINT CHECK (role IN (10, 20)), -- 10=admin, 20=customer
+    role       SMALLINT CHECK (role IN (10, 20)), -- 10=sudo, 20=admin
     club_id    INT REFERENCES club (id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );

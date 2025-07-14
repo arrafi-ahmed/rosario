@@ -3,7 +3,8 @@ const path = require("path");
 const qr = require("qrcode");
 const {API_BASE_URL, VUE_BASE_URL, ANDROID_BASE_URL, NODE_ENV} = process.env;
 
-const appInfo = {name: "Congreso SOCHOB 2025", version: 1.0};9
+const appInfo = {name: "Congreso SOCHOB 2025", version: 1.0};
+9
 const excludedSecurityURLs = [];
 
 const isProd = NODE_ENV === "production";
@@ -30,7 +31,7 @@ const formatDate = (inputDate) => {
 
 function formatDateToMonDD(date) {
     const d = new Date(date); // parse string to Date
-    const options = { month: 'short', day: '2-digit' };
+    const options = {month: 'short', day: '2-digit'};
     return d.toLocaleDateString('en-US', options);
 }
 
@@ -140,6 +141,22 @@ const generateBase64QrCode = async (payload) => {
     return qr.toDataURL(route); // return with base64 prefix
 };
 
+const generatePassword = (length = 8) => {
+    const charset =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,/()-*&^%$#@!";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return password;
+};
+
+const isBcryptHash = (hash) => {
+    // Regex for bcrypt hash: $2a$ or $2b$, followed by cost factor, salt, and hash
+    const bcryptRegex = /^\$2[ab]\$\d{2}\$[./A-Za-z0-9]{53}$/;
+    return bcryptRegex.test(hash);
+}
+
 module.exports = {
     API_BASE_URL,
     VUE_BASE_URL,
@@ -162,5 +179,7 @@ module.exports = {
     ifAdmin,
     excludedSecurityURLs,
     formatDateToMonDD,
+    generatePassword,
+    isBcryptHash
     // logoSvgString,
 };

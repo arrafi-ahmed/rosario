@@ -12,7 +12,7 @@ const router = useRouter();
 
 const email = ref(null);
 const password = ref(null);
-const calcHome = computed(() => store.getters["user/calcHome"]);
+const calcHome = computed(() => store.getters["auth/calcHome"]);
 
 const visible = ref(false);
 const form = ref(null);
@@ -23,7 +23,7 @@ const signinUser = async () => {
   if (!isFormValid.value) return;
 
   store
-    .dispatch("user/signin", {
+    .dispatch("auth/signin", {
       email: email.value,
       password: password.value,
     })
@@ -42,7 +42,7 @@ const handleSubmitResetPassword = async () => {
   if (!isResetFormValid.value) return;
 
   store
-    .dispatch("user/requestResetPass", { resetEmail: resetEmail.value })
+    .dispatch("auth/requestResetPass", { resetEmail: resetEmail.value })
     .then((res) => {
       dialog.value = !dialog.value;
     })

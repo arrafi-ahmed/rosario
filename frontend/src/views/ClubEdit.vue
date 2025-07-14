@@ -11,11 +11,11 @@ const route = useRoute();
 const router = useRouter();
 const store = useStore();
 
-const currentUser = computed(() => store.state.user.currentUser);
+const currentUser = computed(() => store.state.auth.currentUser);
 const targetClubId = computed(() =>
-  store.getters["user/isSudo"]
+  store.getters["auth/isSudo"]
     ? route.params.clubId
-    : store.getters["user/isAdmin"]
+    : store.getters["auth/isAdmin"]
       ? currentUser.value.clubId
       : null,
 );
@@ -51,9 +51,9 @@ const handleNewLogoClear = () => {
 };
 
 const redirectDestination = computed(() =>
-  store.getters['user/isSudo']
+  store.getters['auth/isSudo']
     ? "dashboard-sudo"
-    : store.getters['user/isAdmin']
+    : store.getters['auth/isAdmin']
       ? "dashboard-admin"
       : null,
 );

@@ -8,7 +8,7 @@ const $axios = axios.create({
 
 $axios.interceptors.request.use((config) => {
   store.commit("setProgress", true);
-  const token = store.getters["user/getToken"];
+  const token = store.getters["auth/getToken"];
   if (token) {
     config.headers["Authorization"] = token;
   }

@@ -10,16 +10,16 @@ const store = useStore();
 const router = useRouter();
 const {smAndUp} = useDisplay();
 
-const signedin = computed(() => store.getters["user/signedin"]);
-const currentUser = computed(() => store.getters["user/getCurrentUser"]);
-const calcHome = computed(() => store.getters["user/calcHome"]);
+const signedin = computed(() => store.getters["auth/signedin"]);
+const currentUser = computed(() => store.getters["auth/getCurrentUser"]);
+const calcHome = computed(() => store.getters["auth/calcHome"]);
 
 const isRequiresNoAuth = computed(() =>
   store.state.routeInfo.to.matched.some((record) => record.meta.requiresNoAuth),
 );
 
-const isSudo = computed(() => store.getters["user/isSudo"]);
-const isAdmin = computed(() => store.getters["user/isAdmin"]);
+const isSudo = computed(() => store.getters["auth/isSudo"]);
+const isAdmin = computed(() => store.getters["auth/isAdmin"]);
 
 const menuItemsSudo = [
   {

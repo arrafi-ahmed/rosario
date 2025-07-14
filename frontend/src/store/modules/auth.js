@@ -1,4 +1,5 @@
 import $axios from "@/plugins/axios";
+import {ifAdmin, ifSudo} from "@/others/util";
 
 export const namespaced = true;
 
@@ -33,7 +34,7 @@ export const actions = {
   signin({commit}, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .post("/user/signin", request)
+        .post("/auth/signin", request)
         .then((response) => {
           commit("setToken", response.headers?.authorization);
           commit("setCurrentUser", response.data?.payload?.currentUser);
@@ -54,7 +55,7 @@ export const actions = {
   register({commit}, request) {
     return new Promise((resolve, reject) => {
       $axios
-        .post("/user/register", request)
+        .post("/auth/register", request)
         .then((response) => {
           commit("setToken", response.headers?.authorization);
           commit("setCurrentUser", response.data?.payload?.currentUser);
@@ -74,10 +75,10 @@ export const getters = {
     return state.currentUser;
   },
   isSudo(state) {
-    return state.currentUser.role === 10;
+    return ifSudo({role: state.currentUser.role})
   },
   isAdmin(state) {
-    return state.currentUser.role === 20;
+    return ifAdmin({role: state.currentUser.role})
   },
   signedin(state) {
     return !!state.token;

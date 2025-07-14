@@ -11,7 +11,7 @@ const route = useRoute();
 const router = useRouter();
 
 const events = computed(() => store.state.event.events);
-const currentUser = computed(() => store.getters["user/getCurrentUser"]);
+const currentUser = computed(() => store.getters["auth/getCurrentUser"]);
 
 const deleteEvent = (eventId) => {
   store.dispatch("event/removeEvent", {eventId});

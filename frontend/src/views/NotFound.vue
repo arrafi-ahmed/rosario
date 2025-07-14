@@ -8,7 +8,7 @@ const store = useStore();
 const status = ref(route.params.status || 404);
 const message = ref(route.params.message || "Looks like you're lost!");
 
-const calcHome = computed(() => store.getters["user/calcHome"]);
+const calcHome = computed(() => store.getters["auth/calcHome"]);
 </script>
 
 <template>

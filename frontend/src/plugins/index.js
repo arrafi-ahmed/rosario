@@ -13,14 +13,14 @@ import {getQueryParam, handleRedirect, handleRemoveQueriesNRedirect, removeQuery
 
 function handleAuthRoutes(to, isSignedin, userRole) {
   if (to.matched.some((record) => record.meta.requiresNoAuth) && isSignedin) {
-    return store.getters["user/calcHome"];
+    return store.getters["auth/calcHome"];
   } else if (
     to.matched.some((record) => record.meta.requiresAuth) &&
     !isSignedin
   ) {
     return { name: "signin" };
   } else if (!to.name && isSignedin) {
-    return store.getters["user/calcHome"]; //undefined routes visited
+    return store.getters["auth/calcHome"]; //undefined routes visited
   }
   return null;
 }
@@ -37,8 +37,8 @@ export function registerPlugins(app) {
     //save routeinfo to state
     store.commit("setRouteInfo", { to, from });
 
-    const isSignedin = store.getters["user/signedin"];
-    const currentUser = store.getters["user/getCurrentUser"];
+    const isSignedin = store.getters["auth/signedin"];
+    const currentUser = store.getters["auth/getCurrentUser"];
     const redirectRoute = handleAuthRoutes(to, isSignedin, currentUser.role);
     if (redirectRoute) {
       next(redirectRoute);

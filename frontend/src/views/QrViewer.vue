@@ -26,7 +26,7 @@ const qrOptions = {
   color: theme.global.current.value.colors.primary,
 };
 
-const isSignedin = computed(() => store.getters["user/signedin"]);
+const isSignedin = computed(() => store.getters["auth/signedin"]);
 </script>
 <template>
   <v-container>

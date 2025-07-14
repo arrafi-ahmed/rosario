@@ -55,14 +55,12 @@ const routes = [
       {
         path: "dashboard",
         name: "dashboard",
-        redirect: () => {
-          const role = store.getters["user/getCurrentUser"]?.role;
-          return role === "sudo"
+        redirect: () =>
+          store.getters["auth/isSudo"]
             ? {name: "dashboard-sudo"}
-            : role === "admin"
+            : store.getters["auth/isAdmin"]
               ? {name: "dashboard-admin"}
-              : {name: "not-found"};
-        },
+              : {name: "not-found"},
         meta: {
           requiresAuth: true,
         },
@@ -88,7 +86,7 @@ const routes = [
       {
         path: "club/:clubId/credential",
         name: "credential-generate",
-        component: () => import("@/views/CredentialGenerate.vue"),
+        component: () => import("@/views/Credentials.vue"),
         meta: {
           requiresSudo: true,
           title: "Credentials",

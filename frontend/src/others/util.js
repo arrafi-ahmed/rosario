@@ -250,3 +250,16 @@ export const handleRemoveQueriesNRedirect = ({
   }
   return false;
 };
+
+export const ifSudo = ({role}) => role === 10
+export const ifAdmin = ({role}) => role === 20
+
+export const generatePassword = (length = 8) => {
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,/()-*&^%$#@!";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return password;
+};

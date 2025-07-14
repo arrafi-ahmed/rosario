@@ -4,7 +4,7 @@ import {toast} from "vue-sonner";
 
 const store = useStore();
 store
-  .dispatch("user/signout")
+  .dispatch("auth/signout")
   .then((res) => {
     toast(`Signout successful!`, {
       cardProps: {color: "success"},

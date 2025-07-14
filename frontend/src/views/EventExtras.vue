@@ -11,7 +11,7 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-const currentUser = computed(() => store.state.user.currentUser);
+const currentUser = computed(() => store.state.auth.currentUser);
 const targetClubId = computed(() =>
   currentUser.value.role === "sudo"
     ? route.params.clubId

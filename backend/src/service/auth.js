@@ -31,7 +31,7 @@ const generateAuthData = async (result) => {
     return {token, currentUser};
 };
 
-// role 10 = admin, 20 = customer
+// role 10 = sudo, 20 = admin
 exports.save = async (payload) => {
     const user = {
         ...payload,
@@ -74,4 +74,56 @@ exports.getUserByEmail = async ({email}) => {
         from app_user
         where email = ${email}`;
     return user;
+};
+
+exports.getUserById = async ({id}) => {
+    const [user] = await sql`
+        select *
+        from app_user
+        where id = ${id}`;
+    return user;
+};
+
+exports.requestResetPass = async ({payload: {resetEmail}}) => {
+    const fetchedUser = await exports.getUserByEmail({email: resetEmail});
+    if (!fetchedUser) throw new CustomError("User doesn't exist!");
+
+    const reset = {
+        userId: fetchedUser.id,
+        email: resetEmail,
+        token: uuidv4(),
+        createdAt: new Date(),
+    };
+    const [savedReq] = await sql`
+        insert into password_reset ${sql(reset)} on conflict(id) do
+        update set ${sql(reset)}
+            returning *`;
+
+    sendPasswordResetEmail({
+        to: fetchedUser.email,
+        user: fetchedUser,
+        token: savedReq.token,
+    }).catch((err) => {
+        // Optional: log but don’t crash
+        console.error("Failed to send password reset email:", err);
+    });
+};
+
+exports.submitResetPass = async ({payload: {token, newPass}}) => {
+    const [reset] = await sql`
+        select *
+        from password_reset
+        where token = ${token}`;
+    if (!reset) throw new CustomError("Invalid request!");
+
+    const expirationMillis = reset.createdAt.getTime() + 3600000; // 1 hour in milliseconds
+    if (expirationMillis < Date.now())
+        throw new CustomError("Password reset link expired!");
+
+    const fetchedUser = await exports.getUserById({id: reset.userId});
+
+    const savedUser = await exports.save({
+        payload: {...fetchedUser, password: newPass},
+    });
+    return savedUser;
 };
