@@ -18,21 +18,24 @@ export const mutations = {
     const foundIndex = state.admins.findIndex((item) => item.id == payload.id);
     if (foundIndex !== -1) state.admins[foundIndex] = payload;
   },
+  deleteAppUser(state, payload) {
+    const foundIndex = state.admins.findIndex((item) => item.id == payload);
+    if (foundIndex !== -1) state.admins.splice(foundIndex, 1)
+  },
 };
 
 export const actions = {
   saveAppUser({commit}, request) {
-    const commitName =
-      (request.user.id ? "edit" : "add") +
-      (ifAdmin({role: request.user.role}) ? "Admin" : null);
+    const commitName = `${request.id ? 'edit' : 'add'}${request.type === 'admin' ? 'Admin' : ''}`;
+    const {type, ...rest} = request;
     return new Promise((resolve, reject) => {
       $axios
-        .post("/appUser/save", {payload: request.user})
+        .post("/appUser/save", {payload: rest})
         .then((response) => {
           const {password, ...rest} = response.data?.payload;
           commit(commitName, {
             ...rest,
-            password: request.user.password,
+            password: request.password,
           });
           resolve(response);
         })
@@ -48,10 +51,22 @@ export const actions = {
           params: {clubId: request},
         })
         .then((response) => {
-          response.data?.payload?.appUsers.forEach((item) => {
-
-          })
           commit("setAdmins", response.data?.payload?.appUsers);
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  deleteAppUser({commit}, request) {
+    return new Promise((resolve, reject) => {
+      $axios
+        .get("/appUser/deleteAppUser", {
+          params: {id: request},
+        })
+        .then((response) => {
+          commit("deleteAppUser", request);
           resolve(response);
         })
         .catch((err) => {

@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const userService = require("../service/auth");
+const appUserService = require("../service/appUser");
 const ApiResponse = require("../model/ApiResponse");
 const clubService = require("../service/club");
 
 router.post("/save", async (req, res, next) => {
     try {
-        const savedUser = await userService
+        const savedUser = await appUserService
             .save(req.body)
 
         //added

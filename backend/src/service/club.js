@@ -1,7 +1,7 @@
 const CustomError = require("../model/CustomError");
 const {sql} = require("../db");
 const {v4: uuidv4} = require("uuid");
-const {removeImages} = require("../others/util");
+const {removeImages, ifSudo} = require("../others/util");
 
 exports.save = async ({payload, files, currentUser}) => {
     const newClub = {
@@ -11,7 +11,7 @@ exports.save = async ({payload, files, currentUser}) => {
         createdBy: currentUser.id,
     }
     //if updating club make sure user is authorized
-    if (newClub.id && currentUser.role != "sudo") {
+    if (newClub.id && !ifSudo(currentUser.role)) {
         if (currentUser.clubId != newClub.id)
             throw new CustomError("Access denied", 401);
     }

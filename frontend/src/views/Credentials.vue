@@ -5,6 +5,7 @@ import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 import {toast} from "vue-sonner";
 import {generatePassword} from "@/others/util";
+import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 
 const store = useStore();
 const route = useRoute();
@@ -51,8 +52,11 @@ const handleSubmitCredential = async (type) => {
 
   type = type.toLowerCase();
   user.clubId = route.params.clubId;
+  if (!user.id) {
+    user.password = generatePassword();
+  }
 
-  await store.dispatch("appUser/saveAppUser", {user}).then(() => {
+  await store.dispatch("appUser/saveAppUser", {...user, type}).then(() => {
     if (type === "admin" && user.id) {
       editDialog.value = !editDialog.value;
     } else if (type === "admin" && !user.id) {
@@ -61,9 +65,9 @@ const handleSubmitCredential = async (type) => {
     Object.assign(user, {...userInit});
   });
 };
-// const deleteAppUser = (id, type) => {
-//   store.dispatch("appUser/remove", { id, type });
-// };
+const deleteAppUser = (id, type) => {
+  store.dispatch("appUser/deleteAppUser", id);
+};
 
 const showGeneratedPassword = ref(false);
 const handleGeneratePassword = () => {
@@ -138,20 +142,20 @@ onMounted(() => {
                         title="Edit"
                         @click="openEditDialog(item, 'admin')"
                       ></v-list-item>
-                      <v-list-item
-                        density="compact"
-                        link
-                        prepend-icon="mdi-delete"
-                        title="Delete"
-                        @click="copyToClipboard(item)"
-                      ></v-list-item>
-                      <!--                        <remove-entity-->
-                      <!--                          btn-variant="flat"-->
-                      <!--                          color="error"-->
-                      <!--                          text="Delete"-->
-                      <!--                          variant="list-item"-->
-                      <!--                          @remove-entity="deleteAppUser(item.aId, 'exhibitor')"-->
-                      <!--                        ></remove-entity>-->
+                      <v-divider></v-divider>
+                      <confirmation-dialog
+                        @confirm="deleteAppUser(item.id)"
+                      >
+                        <template #activator="{ onClick }">
+                          <v-list-item
+                            class="text-error"
+                            link
+                            prepend-icon="mdi-delete"
+                            title="Delete"
+                            @click.stop="onClick"
+                          />
+                        </template>
+                      </confirmation-dialog>
                     </v-list>
                   </v-menu>
                 </td>

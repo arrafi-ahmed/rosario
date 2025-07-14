@@ -31,30 +31,6 @@ const generateAuthData = async (result) => {
     return {token, currentUser};
 };
 
-// role 10 = sudo, 20 = admin
-exports.save = async (payload) => {
-    const user = {
-        ...payload,
-    };
-    if (!user.id) {
-        user.password = await hash(payload.password, 10);
-        user.role = payload.role || 20
-        user.createdAt = new Date()
-    }
-
-    let savedUser = null;
-    try {
-        [savedUser] = await sql`
-            insert into app_user ${sql(user)} on conflict(id) do
-            update set ${sql(user)} returning *`;
-    } catch (err) {
-        if (err.code === "23505")
-            throw new CustomError("Email already taken!", 409);
-        else throw err;
-    }
-    return savedUser;
-};
-
 exports.signin = async ({email, password}) => {
     const user = await exports.getUserByEmail({email});
     if (!user?.email) {
