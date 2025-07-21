@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const appUserService = require("../service/appUser");
+const authService = require("../service/auth");
 const ApiResponse = require("../model/ApiResponse");
 const clubService = require("../service/club");
 
@@ -12,7 +13,7 @@ router.post("/save", async (req, res, next) => {
         const savedClub = await clubService
             .save({payload: {name: savedUser.fullName}, currentUser: savedUser})
 
-        const updatedUser = await userService
+        const updatedUser = await appUserService
             .save({...savedUser, clubId: savedClub.id})
 
         if (updatedUser) {
@@ -26,7 +27,7 @@ router.post("/save", async (req, res, next) => {
 });
 
 router.post("/signin", (req, res, next) => {
-    userService
+    authService
         .signin(req.body)
         .then(({token, currentUser}) => {
             if (token) {
@@ -40,7 +41,7 @@ router.post("/signin", (req, res, next) => {
 });
 
 router.post("/requestResetPass", (req, res, next) => {
-    userService
+    authService
         .requestResetPass({payload: req.body})
         .then((result) => {
             res
@@ -53,7 +54,7 @@ router.post("/requestResetPass", (req, res, next) => {
 });
 
 router.post("/submitResetPass", (req, res, next) => {
-    userService
+    authService
         .submitResetPass({payload: req.body})
         .then((result) => {
             res
