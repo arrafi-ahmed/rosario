@@ -1,26 +1,15 @@
 const router = require("express").Router();
-const appUserService = require("../service/appUser");
 const authService = require("../service/auth");
 const ApiResponse = require("../model/ApiResponse");
-const clubService = require("../service/club");
 
-router.post("/save", async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
     try {
-        const savedUser = await appUserService
-            .save(req.body)
+        const savedUser = await authService
+            .register({payload: req.body})
 
-        //added
-        const savedClub = await clubService
-            .save({payload: {name: savedUser.fullName}, currentUser: savedUser})
-
-        const updatedUser = await appUserService
-            .save({...savedUser, clubId: savedClub.id})
-
-        if (updatedUser) {
-            res
-                .status(200)
-                .json(new ApiResponse("Registration successful!", {result: updatedUser}));
-        }
+        res
+            .status(200)
+            .json(new ApiResponse("Registration successful!", {result: savedUser}));
     } catch (err) {
         next(err)
     }

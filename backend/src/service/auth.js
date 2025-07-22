@@ -3,7 +3,8 @@ const {v4: uuidv4} = require("uuid");
 const {hash, compare, compareSync} = require("bcrypt");
 const CustomError = require("../model/CustomError");
 const {sql} = require("../db");
-const {ifAdmin} = require("../others/util");
+const {ifAdmin, generatePassword, isBcryptHash} = require("../others/util");
+const clubService = require("./club");
 
 const generateAuthData = async (result) => {
     let token = "";
@@ -42,6 +43,33 @@ exports.signin = async ({email, password}) => {
         throw new CustomError("Incorrect email/password!", 401);
     }
     return generateAuthData(user);
+};
+
+exports.register = async ({payload}) => {
+    //create club
+    const newClub = {
+        name: payload.fullName,
+    }
+    const savedClub = await clubService.save({payload: newClub});
+
+    const newUser = {
+        ...payload,
+        clubId: savedClub.id,
+        password: await hash(payload.password, 10),
+        role: 20,
+    }
+
+    let upsertedUser = null;
+    try {
+        [upsertedUser] = await sql`
+            insert into app_user ${sql(newUser)} returning *`;
+    } catch (err) {
+        if (err.code === "23505") {
+            await clubService.removeClub({clubId: savedClub.id});
+            throw new CustomError("Email already taken!", 409);
+        } else throw err;
+    }
+    return upsertedUser;
 };
 
 exports.getUserByEmail = async ({email}) => {

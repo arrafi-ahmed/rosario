@@ -30,7 +30,7 @@ export const actions = {
     const {type, ...rest} = request;
     return new Promise((resolve, reject) => {
       $axios
-        .post("/appUser/save", {payload: rest})
+        .post("/appUser/save", rest)
         .then((response) => {
           const {password, ...rest} = response.data?.payload;
           commit(commitName, {

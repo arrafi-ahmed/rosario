@@ -8,7 +8,6 @@ exports.save = async ({payload, files, currentUser}) => {
         ...payload,
         name: payload.name,
         location: payload.location === '' ? null : payload.location,
-        createdBy: currentUser.id,
     }
     //if updating club make sure user is authorized
     if (newClub.id && !ifSudo(currentUser.role)) {

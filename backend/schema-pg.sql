@@ -2,7 +2,7 @@ CREATE TABLE club
 (
     id       SERIAL PRIMARY KEY,
     name     VARCHAR(100) NOT NULL,
-    location TEXT,  --updated
+    location TEXT, --updated
     logo     VARCHAR(255)
 );
 
@@ -16,9 +16,6 @@ CREATE TABLE app_user
     club_id    INT REFERENCES club (id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
-
-ALTER TABLE club
-    ADD COLUMN created_by INT REFERENCES app_user (id);
 
 CREATE TABLE event
 (
@@ -47,9 +44,9 @@ CREATE TABLE event_stripe
 CREATE TABLE registration
 (
     id                SERIAL PRIMARY KEY,
-    registration_data jsonb,   --name, email, phone, others:{...rest}
+    registration_data jsonb,                    --name, email, phone, others:{...rest}
     registration_time TIMESTAMP WITH TIME ZONE, -- updated
-    status            BOOLEAN, -- added
+    status            BOOLEAN,                  -- added
     qr_uuid           VARCHAR(255) UNIQUE NOT NULL,
     event_id          INT                 NOT NULL REFERENCES event (id) ON DELETE CASCADE,
     club_id           INT                 NOT NULL REFERENCES club (id) ON DELETE CASCADE
@@ -90,7 +87,7 @@ CREATE TABLE form_question
 CREATE TABLE checkin
 (
     id              SERIAL PRIMARY KEY,
-    status          BOOLEAN, -- updated
+    status          BOOLEAN,                  -- updated
     checkin_time    TIMESTAMP WITH TIME ZONE, -- updated
     registration_id INT NOT NULL REFERENCES registration (id) ON DELETE CASCADE,
     checkedin_by    INT NOT NULL REFERENCES app_user (id) ON DELETE CASCADE
