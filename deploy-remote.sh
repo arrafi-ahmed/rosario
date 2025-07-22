@@ -88,7 +88,9 @@ sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN
 sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER;"
 sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $DB_USER;"
 
-# Optional grants removed per user instruction
+# Add these new lines
+sudo -u postgres psql -d "$DB_NAME" -c "REASSIGN OWNED BY postgres TO $DB_USER;"
+sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER WITH GRANT OPTION;"
 
 echo "6.0 Cloning repo into $GLOBAL_CLONE_DIR..."
 rm -rf "$GLOBAL_CLONE_DIR"
