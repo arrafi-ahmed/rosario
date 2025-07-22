@@ -4,12 +4,19 @@ const ApiResponse = require("../model/ApiResponse");
 const {auth, isSudo} = require("../middleware/auth");
 const {ifSudo} = require("../others/util");
 
-router.post("/save", auth, (req, res, next) => {
-    if (!ifSudo(req.currentUser.role))
-        return res.status(403).json(new ApiResponse("Invalid Request!", null));
-
+// handled by registration page
+router.post("/register", (req, res, next) => {
     appUserService
-        .save(req.body)
+        .save({payload: req.body, setPass: false})
+        .then((results) =>
+            res.status(200).json(new ApiResponse("User saved!", results)),
+        )
+        .catch((err) => next(err));
+});
+// handled by admin
+router.post("/save", auth, isSudo, (req, res, next) => {
+    appUserService
+        .save({payload: req.body, setPass: true})
         .then((results) =>
             res.status(200).json(new ApiResponse("User saved!", results)),
         )

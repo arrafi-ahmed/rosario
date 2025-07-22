@@ -4,14 +4,14 @@ import {useRouter} from "vue-router";
 import {isValidEmail, isValidPass, showApiQueryMsg} from "@/others/util";
 import {useDisplay} from "vuetify";
 
-const { xs } = useDisplay();
+const {xs} = useDisplay();
 const router = useRouter();
 const userInit = {
   fullName: null,
   email: null,
   password: null,
 };
-const user = reactive({ ...userInit });
+const user = reactive({...userInit});
 const confirmPassword = ref(null);
 const visible = ref(false);
 const form = ref(null);
@@ -21,7 +21,7 @@ const registerUser = async () => {
   await form.value.validate();
   if (!isFormValid.value) return;
 
-  $axios.post("/auth/save", user).then((res) => {
+  $axios.post("/appUser/register", user).then((res) => {
     router.push({
       name: "signin",
     });

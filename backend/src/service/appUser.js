@@ -5,14 +5,17 @@ const {generatePassword, isBcryptHash} = require("../others/util");
 const {hash, compare} = require("bcrypt");
 
 // role 10 = sudo, 20 = admin
-exports.save = async ({payload}) => {
+exports.save = async ({payload, setPass}) => {
+    console.log(2, payload)
     // if add request
     if (!payload.id) {
         delete payload.id;
-        payload.password = generatePassword();
+        payload.password = setPass ? generatePassword() : payload.password;
+        console.log(3, payload)
     }
     if (!isBcryptHash(payload.password)) {
         payload.password = await hash(payload.password, 10);
+        console.log(4, payload)
     }
     payload.role = Number(payload.role) || 20;
 
@@ -28,6 +31,7 @@ exports.save = async ({payload}) => {
             throw new CustomError("Email already taken!", 409);
         else throw err;
     }
+    console.log(5, payload)
     return upsertedUser;
 };
 
