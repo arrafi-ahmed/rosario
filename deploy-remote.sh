@@ -88,9 +88,25 @@ sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN
 sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER;"
 sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $DB_USER;"
 
-# Replace the REASSIGN OWNED with these more specific commands
-sudo -u postgres psql -d "$DB_NAME" -c "SELECT 'ALTER TABLE \"' || schemaname || '\".\"' || tablename || '\" OWNER TO $DB_USER;' FROM pg_tables WHERE schemaname = 'public' \gexec"
-sudo -u postgres psql -d "$DB_NAME" -c "SELECT 'ALTER SEQUENCE \"' || sequence_schema || '\".\"' || sequence_name || '\" OWNER TO $DB_USER;' FROM information_schema.sequences WHERE sequence_schema = 'public' \gexec"
+# Change ownership of existing tables
+sudo -u postgres psql -d "$DB_NAME" << EOF
+DO \$\$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+    LOOP
+        EXECUTE 'ALTER TABLE public.' || quote_ident(r.tablename) || ' OWNER TO $DB_USER';
+    END LOOP;
+
+    FOR r IN SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
+    LOOP
+        EXECUTE 'ALTER SEQUENCE public.' || quote_ident(r.sequence_name) || ' OWNER TO $DB_USER';
+    END LOOP;
+END
+\$\$;
+EOF
+
 sudo -u postgres psql -d "$DB_NAME" -c "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER WITH GRANT OPTION;"
 
 echo "6.0 Cloning repo into $GLOBAL_CLONE_DIR..."
