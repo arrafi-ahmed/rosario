@@ -82,6 +82,8 @@ fi
 
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
 sudo -u postgres psql -d "$DB_NAME" -c "GRANT ALL ON SCHEMA public TO $DB_USER;"
+sudo -u postgres psql -d "$DB_NAME" -c "ALTER SCHEMA $DB_USER OWNER TO $DB_USER;"
+sudo -u postgres psql -d "$DB_NAME" -c "REASSIGN OWNED BY postgres TO $DB_USER IN SCHEMA $DB_USER;"
 
 # Optional grants removed per user instruction
 
